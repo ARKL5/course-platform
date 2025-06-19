@@ -1,0 +1,120 @@
+basePath: /api/v1
+definitions:
+  handler.ErrorResponse:
+    properties:
+      error:
+        example: 用戶名已存在
+        type: string
+    type: object
+  handler.GetUserResponse:
+    properties:
+      message:
+        example: 獲取用戶信息成功
+        type: string
+      user:
+        $ref: '#/definitions/handler.UserInfo'
+    type: object
+  handler.RegisterRequest:
+    properties:
+      nickname:
+        example: 測試用戶
+        type: string
+      password:
+        example: "123456"
+        type: string
+      username:
+        example: testuser
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  handler.RegisterResponse:
+    properties:
+      message:
+        example: 註冊成功
+        type: string
+      user:
+        $ref: '#/definitions/handler.UserInfo'
+    type: object
+  handler.UserInfo:
+    properties:
+      avatar:
+        example: ""
+        type: string
+      created_at:
+        example: "2023-01-01T00:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      nickname:
+        example: 測試用戶
+        type: string
+      username:
+        example: testuser
+        type: string
+    type: object
+host: localhost:8082
+info:
+  contact: {}
+  description: 這是課程學習網站的 API 文件。
+  title: 課程學習網站 API
+  version: "1.0"
+paths:
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: 註冊新用戶帳號
+      parameters:
+      - description: 註冊請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 註冊成功
+          schema:
+            $ref: '#/definitions/handler.RegisterResponse'
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: 用戶註冊
+      tags:
+      - 用戶管理
+  /user/{username}:
+    get:
+      consumes:
+      - application/json
+      description: 根據用戶名獲取用戶信息
+      parameters:
+      - description: 用戶名
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 獲取成功
+          schema:
+            $ref: '#/definitions/handler.GetUserResponse'
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: 用戶不存在
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: 獲取用戶信息
+      tags:
+      - 用戶管理
+swagger: "2.0"

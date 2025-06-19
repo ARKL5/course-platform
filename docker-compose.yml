@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  # API网关服务
+  api-gateway:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.server
+    container_name: course-platform-gateway
+    ports:
+      - "8083:8083"
+    depends_on:
+      - user-service
+      - course-service
+      - content-service
+    environment:
+      - USER_SERVICE_ADDR=user-service:50051
+      - COURSE_SERVICE_ADDR=course-service:50052
+      - CONTENT_SERVICE_ADDR=content-service:50053
+    volumes:
+      - ./uploads:/root/uploads
+      - ./logs:/root/logs
+    networks:
+      - course-platform-network
+    restart: unless-stopped
+
+  # 用户服务
+  user-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.user-service
+    container_name: course-platform-user
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./configs:/root/configs
+      - ./logs:/root/logs
+    networks:
+      - course-platform-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pgrep", "user-service"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 课程服务
+  course-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.course-service
+    container_name: course-platform-course
+    ports:
+      - "50052:50052"
+    volumes:
+      - ./configs:/root/configs
+      - ./logs:/root/logs
+    networks:
+      - course-platform-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pgrep", "course-service"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 内容服务
+  content-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.content-service
+    container_name: course-platform-content
+    ports:
+      - "50053:50053"
+    volumes:
+      - ./uploads:/root/uploads
+      - ./configs:/root/configs
+      - ./logs:/root/logs
+    networks:
+      - course-platform-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pgrep", "content-service"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# 自定义网络
+networks:
+  course-platform-network:
+    driver: bridge
+    name: course-platform-net
+
+# 数据卷
+volumes:
+  uploads-data:
+    driver: local
+  logs-data:
+    driver: local 

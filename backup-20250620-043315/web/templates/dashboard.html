@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户中心 - Course Platform</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="/" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <span class="logo-text">Course Platform</span>
+                </a>
+            </div>
+
+            <!-- 导航菜单 -->
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-compass"></i>
+                        发现
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link active">
+                        <i class="fas fa-chart-line"></i>
+                        学习中心
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/creator/dashboard" class="nav-link">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        创作工作台
+                    </a>
+                </li>
+            </ul>
+
+            <!-- 用户操作区 -->
+            <div class="nav-right">
+                <!-- 用户头像区域 -->
+                <div class="user-profile" id="userProfile" style="display: none;">
+                    <img src="/static/images/default-avatar.svg" alt="用户头像" class="user-avatar">
+                    <span class="user-name" id="userName">用户</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    
+                    <!-- 用户下拉菜单 -->
+                    <div class="user-dropdown">
+                        <!-- 学习相关功能 -->
+                        <a href="/dashboard" class="dropdown-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>学习仪表盘</span>
+                        </a>
+                        <a href="/creator/dashboard" class="dropdown-item">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>创作工作台</span>
+                        </a>
+                        
+                        <hr class="dropdown-divider">
+                        
+                        <!-- 个人设置功能组 -->
+                        <a href="#" class="dropdown-item" id="profileSettings">
+                            <i class="fas fa-user-edit"></i>
+                            <span>个人资料设置</span>
+                        </a>
+                        <a href="#" class="dropdown-item" id="orderHistory">
+                            <i class="fas fa-receipt"></i>
+                            <span>订单历史</span>
+                        </a>
+                        
+                        <hr class="dropdown-divider">
+                        
+                        <!-- 帮助与支持 -->
+                        <a href="#" class="dropdown-item" id="helpCenter">
+                            <i class="fas fa-question-circle"></i>
+                            <span>帮助中心</span>
+                        </a>
+                        
+                        <hr class="dropdown-divider">
+                        
+                        <!-- 退出功能 -->
+                        <a href="#" class="dropdown-item logout-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>退出登录</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 登录/注册按钮 -->
+                <div class="auth-buttons" id="authButtons">
+                    <a href="/login" class="auth-btn login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>登录</span>
+                    </a>
+                    <a href="/register" class="auth-btn register-btn">
+                        <i class="fas fa-user-plus"></i>
+                        <span>注册</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 移动端菜单按钮 -->
+            <div class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <div class="dashboard-container">
+            <!-- 左侧导航菜单 -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2 class="sidebar-title">
+                        <i class="fas fa-user-circle"></i>
+                        用户中心
+                    </h2>
+                </div>
+                
+                <nav class="sidebar-nav">
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active" data-section="learning-progress">
+                                <i class="far fa-chart-line"></i>
+                                <span>学习进度</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="my-courses">
+                                <i class="far fa-book-open"></i>
+                                <span>我的课程</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="profile">
+                                <i class="far fa-user-edit"></i>
+                                <span>个人资料</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="security">
+                                <i class="far fa-shield-alt"></i>
+                                <span>账户安全</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="orders">
+                                <i class="far fa-receipt"></i>
+                                <span>订单管理</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="settings">
+                                <i class="far fa-cog"></i>
+                                <span>系统设置</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <div class="sidebar-footer">
+                    <a href="/" class="back-home">
+                        <i class="fas fa-arrow-left"></i>
+                        返回首页
+                    </a>
+                </div>
+            </aside>
+            
+            <!-- 右侧内容区域 -->
+            <div class="content-area">
+                <!-- 页面头部 -->
+                <header class="content-header">
+                    <div class="breadcrumb">
+                        <a href="/" class="breadcrumb-item">首页</a>
+                        <i class="fas fa-chevron-right breadcrumb-separator"></i>
+                        <a href="/dashboard" class="breadcrumb-item">用户中心</a>
+                        <i class="fas fa-chevron-right breadcrumb-separator"></i>
+                        <span class="breadcrumb-current" id="currentPageTitle">学习进度</span>
+                    </div>
+                    <h1 class="page-title" id="pageTitle">学习仪表盘</h1>
+                    <p class="page-subtitle" id="pageSubtitle">掌握你的学习进度，继续你的知识之旅</p>
+                </header>
+                
+                <!-- 动态内容区域 -->
+                <div class="content-sections">
+                    <!-- 学习进度模块 -->
+                    <section class="content-section active" id="learning-progress-section">
+                        <!-- 学习统计卡片 -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="far fa-calendar-check"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-number" data-count="12">0</div>
+                                    <div class="stat-label">总课程</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="far fa-check-circle"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-number" data-count="8">0</div>
+                                    <div class="stat-label">已完成</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="far fa-clock"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-number" data-count="156">0</div>
+                                    <div class="stat-label">学习时长 (小时)</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-number" data-count="24">0</div>
+                                    <div class="stat-label">连续学习 (天)</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 最近学习的课程 -->
+                        <div class="recent-learning">
+                            <div class="section-header">
+                                <h2 class="section-title">
+                                    <i class="far fa-history"></i>
+                                    最近学习的课程
+                                </h2>
+                                <a href="#" class="section-link" data-section="my-courses">
+                                    查看全部
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                            
+                            <div class="recent-courses-grid" id="recentCoursesGrid">
+                                <!-- 动态生成最近学习的课程 -->
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- 我的课程模块 -->
+                    <section class="content-section" id="my-courses-section">
+                        <div class="section-header">
+                            <div class="section-filters">
+                                <button class="filter-btn active" data-filter="all">
+                                    <i class="far fa-list"></i>
+                                    <span>全部</span>
+                                </button>
+                                <button class="filter-btn" data-filter="in-progress">
+                                    <i class="far fa-play-circle"></i>
+                                    <span>进行中</span>
+                                </button>
+                                <button class="filter-btn" data-filter="completed">
+                                    <i class="far fa-check-circle"></i>
+                                    <span>已完成</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 课程网格 -->
+                        <div class="courses-grid" id="coursesGrid">
+                            <!-- 课程卡片将在这里动态生成 -->
+                        </div>
+                        
+                        <!-- 空状态 -->
+                        <div class="empty-state" id="emptyState" style="display: none;">
+                            <div class="empty-illustration">
+                                <i class="far fa-book"></i>
+                            </div>
+                            <h3>还没有已注册的课程</h3>
+                            <p>开始您的学习之旅，探索我们丰富的课程内容。</p>
+                            <a href="/" class="btn btn-primary">
+                                <i class="fas fa-search"></i>
+                                浏览课程
+                            </a>
+                        </div>
+                    </section>
+                    
+                    <!-- 个人资料模块 -->
+                    <section class="content-section" id="profile-section">
+                        <div class="profile-settings-container">
+                            <!-- 基本信息卡片 -->
+                            <div class="settings-card">
+                                <div class="card-header">
+                                    <h3>
+                                        <i class="far fa-user"></i>
+                                        基本信息
+                                    </h3>
+                                    <p>管理您的个人资料和基本信息</p>
+                                </div>
+                                
+                                <div class="profile-avatar-section">
+                                    <div class="avatar-upload">
+                                        <img src="/static/images/default-avatar.svg" alt="用户头像" class="profile-avatar" id="profileAvatar">
+                                        <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
+                                        <button type="button" class="avatar-change-btn" id="avatarChangeBtn">
+                                            <i class="fas fa-camera"></i>
+                                            更换头像
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <form class="profile-form" id="profileForm">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="nickname">昵称</label>
+                                            <input type="text" id="nickname" name="nickname" placeholder="请输入昵称">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="username">用户名</label>
+                                            <input type="text" id="username" name="username" placeholder="用户名" readonly>
+                                            <small class="input-help">用户名不可修改</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="email">邮箱</label>
+                                            <input type="email" id="email" name="email" placeholder="邮箱地址" readonly>
+                                            <small class="input-help">邮箱不可修改</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="phone">手机号</label>
+                                            <input type="tel" id="phone" name="phone" placeholder="请输入手机号">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="bio">个人简介</label>
+                                        <textarea id="bio" name="bio" rows="4" placeholder="介绍一下自己吧..." maxlength="200"></textarea>
+                                        <small class="input-help">最多200个字符</small>
+                                    </div>
+                                    
+                                    <div class="form-actions">
+                                        <button type="button" class="btn btn-outline" id="cancelProfile">取消</button>
+                                        <button type="submit" class="btn btn-primary" id="saveProfile">
+                                            <i class="fas fa-save"></i>
+                                            保存更改
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- 账户安全卡片 -->
+                            <div class="settings-card">
+                                <div class="card-header">
+                                    <h3>
+                                        <i class="fas fa-shield-alt"></i>
+                                        账户安全
+                                    </h3>
+                                    <p>保护您的账户安全，管理密码和验证设置</p>
+                                </div>
+                                
+                                <form class="password-form" id="passwordForm">
+                                    <div class="form-group">
+                                        <label for="currentPassword">当前密码</label>
+                                        <div class="password-input-wrapper">
+                                            <input type="password" id="currentPassword" name="currentPassword" placeholder="请输入当前密码" required>
+                                            <button type="button" class="password-toggle" data-target="currentPassword">
+                                                <i class="far fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="newPassword">新密码</label>
+                                            <div class="password-input-wrapper">
+                                                <input type="password" id="newPassword" name="newPassword" placeholder="请输入新密码" required minlength="8">
+                                                <button type="button" class="password-toggle" data-target="newPassword">
+                                                    <i class="far fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <div class="password-strength" id="passwordStrength"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="confirmPassword">确认新密码</label>
+                                            <div class="password-input-wrapper">
+                                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="请再次输入新密码" required>
+                                                <button type="button" class="password-toggle" data-target="confirmPassword">
+                                                    <i class="far fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <div class="password-match" id="passwordMatch"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="password-requirements">
+                                        <h4>密码要求：</h4>
+                                        <ul>
+                                            <li id="req-length">至少8个字符</li>
+                                            <li id="req-uppercase">包含大写字母</li>
+                                            <li id="req-lowercase">包含小写字母</li>
+                                            <li id="req-number">包含数字</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="form-actions">
+                                        <button type="button" class="btn btn-outline" id="cancelPassword">取消</button>
+                                        <button type="submit" class="btn btn-primary" id="changePassword">
+                                            <i class="fas fa-key"></i>
+                                            修改密码
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- 账户安全模块 -->
+                    <section class="content-section" id="security-section">
+                        <div class="security-container">
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h3>
+                                        <i class="fas fa-mobile-alt"></i>
+                                        手机绑定
+                                    </h3>
+                                    <p>绑定手机号，用于账户验证和找回密码</p>
+                                </div>
+                                <button class="btn btn-outline" id="bindPhoneBtn">
+                                    <i class="fas fa-link"></i>
+                                    绑定手机
+                                </button>
+                            </div>
+                            
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h3>
+                                        <i class="fas fa-shield-alt"></i>
+                                        两步验证
+                                    </h3>
+                                    <p>开启两步验证，为账户添加额外保护</p>
+                                </div>
+                                <button class="btn btn-outline" id="enable2FABtn">
+                                    <i class="fas fa-toggle-off"></i>
+                                    开启验证
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- 订单管理模块 -->
+                    <section class="content-section" id="orders-section">
+                        <div class="orders-container">
+                            <div class="empty-state">
+                                <div class="empty-illustration">
+                                    <i class="far fa-credit-card"></i>
+                                </div>
+                                <h3>暂无订单记录</h3>
+                                <p>您还没有购买过任何课程，快去探索精彩内容吧！</p>
+                                <a href="/" class="btn btn-primary">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    去购买课程
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- 系统设置模块 -->
+                    <section class="content-section" id="settings-section">
+                        <div class="settings-container">
+                            <div class="settings-group">
+                                <h3>通知设置</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>课程更新通知</label>
+                                        <p>当您关注的课程有新内容时通知您</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>学习提醒</label>
+                                        <p>每日学习提醒，帮助您保持学习习惯</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <h3>隐私设置</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>公开学习记录</label>
+                                        <p>允许其他用户查看您的学习进度</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 通知容器 -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html> 

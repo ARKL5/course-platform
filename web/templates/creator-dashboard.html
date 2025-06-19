@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创作者工作台 - Course Platform</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/creator-dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="/" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <span class="logo-text">Course Platform</span>
+                </a>
+            </div>
+
+            <!-- 导航菜单 -->
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-compass"></i>
+                        发现
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        学习中心
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/creator/dashboard" class="nav-link active">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        创作工作台
+                    </a>
+                </li>
+            </ul>
+
+            <!-- 用户操作区 -->
+            <div class="nav-right">
+                <!-- 用户头像区域 -->
+                <div class="user-profile" id="userProfile" style="display: none;">
+                    <img src="/static/images/default-avatar.svg" alt="用户头像" class="user-avatar">
+                    <span class="user-name" id="userName">用户</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    
+                    <!-- 用户下拉菜单 -->
+                    <div class="user-dropdown">
+                        <a href="/dashboard" class="dropdown-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>学习仪表盘</span>
+                        </a>
+                        <a href="/creator/dashboard" class="dropdown-item">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>创作工作台</span>
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a href="#" class="dropdown-item logout-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>退出登录</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 登录/注册按钮 -->
+                <div class="auth-buttons" id="authButtons">
+                    <a href="/login" class="auth-btn login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>登录</span>
+                    </a>
+                    <a href="/register" class="auth-btn register-btn">
+                        <i class="fas fa-user-plus"></i>
+                        <span>注册</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <div class="creator-container">
+            <!-- 页面头部 -->
+            <header class="creator-header">
+                <div class="breadcrumb">
+                    <a href="/" class="breadcrumb-item">首页</a>
+                    <i class="fas fa-chevron-right breadcrumb-separator"></i>
+                    <span class="breadcrumb-current">创作者工作台</span>
+                </div>
+                <div class="header-content">
+                    <div class="header-main">
+                        <h1 class="page-title">
+                            <i class="fas fa-palette"></i>
+                            创作者工作台
+                        </h1>
+                        <p class="page-subtitle">创建并管理您的优质课程内容</p>
+                    </div>
+                    <div class="header-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalCourses">0</div>
+                            <div class="stat-label">我的课程</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalStudents">0</div>
+                            <div class="stat-label">学员总数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalRevenue">¥0</div>
+                            <div class="stat-label">总收入</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 创作区域 -->
+            <div class="creator-content">
+                <!-- 第一部分：课程信息表单 -->
+                <section class="creation-section" id="courseInfoSection">
+                    <div class="section-card">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-plus-circle"></i>
+                            </div>
+                            <div class="section-title-group">
+                                <h2 class="section-title">创建您的新课程</h2>
+                                <p class="section-subtitle">填写课程基本信息，开始您的教学之旅</p>
+                            </div>
+                        </div>
+
+                        <form class="course-form" id="courseCreationForm">
+                            <div class="form-grid">
+                                <!-- 课程标题 -->
+                                <div class="form-group full-width">
+                                    <label for="courseTitle" class="form-label">
+                                        <i class="fas fa-heading"></i>
+                                        课程标题 *
+                                    </label>
+                                    <input type="text" 
+                                           id="courseTitle" 
+                                           name="title" 
+                                           class="form-input" 
+                                           placeholder="请输入课程标题，例如：Python编程从入门到精通"
+                                           required>
+                                    <div class="input-hint">
+                                        一个好的标题能吸引更多学员关注
+                                    </div>
+                                </div>
+
+                                <!-- 课程分类 -->
+                                <div class="form-group">
+                                    <label for="courseCategory" class="form-label">
+                                        <i class="fas fa-tag"></i>
+                                        课程分类 *
+                                    </label>
+                                    <select id="courseCategory" 
+                                            name="category_id" 
+                                            class="form-input" 
+                                            required>
+                                        <option value="">请选择课程分类</option>
+                                        <option value="1">编程开发</option>
+                                        <option value="2">设计创意</option>
+                                        <option value="3">商业管理</option>
+                                        <option value="4">语言学习</option>
+                                        <option value="5">职业技能</option>
+                                        <option value="6">兴趣爱好</option>
+                                        <option value="7">学术研究</option>
+                                        <option value="8">其他</option>
+                                    </select>
+                                </div>
+
+                                <!-- 课程价格 -->
+                                <div class="form-group">
+                                    <label for="coursePrice" class="form-label">
+                                        <i class="fas fa-yen-sign"></i>
+                                        课程价格 *
+                                    </label>
+                                    <input type="number" 
+                                           id="coursePrice" 
+                                           name="price" 
+                                           class="form-input" 
+                                           placeholder="0"
+                                           min="0"
+                                           step="0.01"
+                                           required>
+                                    <div class="input-hint">
+                                        设置为0表示免费课程
+                                    </div>
+                                </div>
+
+                                <!-- 课程描述 -->
+                                <div class="form-group full-width">
+                                    <label for="courseDescription" class="form-label">
+                                        <i class="fas fa-align-left"></i>
+                                        课程描述 *
+                                    </label>
+                                    <textarea id="courseDescription" 
+                                              name="description" 
+                                              class="form-textarea" 
+                                              rows="6"
+                                              placeholder="详细描述您的课程内容、学习目标、适合人群等..."
+                                              required></textarea>
+                                    <div class="input-hint">
+                                        详细的描述有助于学员了解课程价值
+                                    </div>
+                                </div>
+
+                                <!-- 课程封面 -->
+                                <div class="form-group full-width">
+                                    <label for="courseCover" class="form-label">
+                                        <i class="fas fa-image"></i>
+                                        课程封面
+                                    </label>
+                                    <div class="cover-upload-area" id="coverUploadArea">
+                                        <input type="file" 
+                                               id="courseCover" 
+                                               name="cover_image" 
+                                               accept="image/*" 
+                                               class="cover-input">
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <p>点击上传课程封面</p>
+                                            <span>支持 JPG、PNG 格式，建议尺寸 1200x630</span>
+                                        </div>
+                                        <div class="cover-preview" style="display: none;">
+                                            <img id="coverPreview" src="" alt="封面预览">
+                                            <button type="button" class="remove-cover-btn" id="removeCoverBtn">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" id="resetFormBtn">
+                                    <i class="fas fa-undo"></i>
+                                    重置表单
+                                </button>
+                                <button type="submit" class="btn-primary" id="createCourseBtn">
+                                    <i class="fas fa-rocket"></i>
+                                    创建课程并进入下一步
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- 第二部分：课程内容管理 -->
+                <section class="creation-section" id="contentManagementSection" style="display: none;">
+                    <div class="section-card">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
+                            <div class="section-title-group">
+                                <h2 class="section-title">管理课程内容: <span id="currentCourseTitle">课程标题</span></h2>
+                                <p class="section-subtitle">上传和管理您的课程资料、视频和文档</p>
+                            </div>
+                            <button class="btn-secondary back-to-form-btn" id="backToFormBtn">
+                                <i class="fas fa-arrow-left"></i>
+                                返回课程信息
+                            </button>
+                        </div>
+
+                        <!-- 文件上传区域 -->
+                        <div class="upload-section">
+                            <div class="upload-header">
+                                <h3>
+                                    <i class="fas fa-upload"></i>
+                                    上传课程内容
+                                </h3>
+                                <p>支持视频、文档、音频等多种格式</p>
+                            </div>
+
+                            <div class="file-upload-area" id="fileUploadArea">
+                                <input type="file" 
+                                       id="contentFileInput" 
+                                       multiple 
+                                       accept="video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx,.txt,.md">
+                                <div class="upload-zone">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <h4>拖拽文件到这里或点击上传</h4>
+                                    <p>支持多个文件同时上传</p>
+                                    <div class="supported-formats">
+                                        <span class="format-tag">MP4</span>
+                                        <span class="format-tag">AVI</span>
+                                        <span class="format-tag">MP3</span>
+                                        <span class="format-tag">PDF</span>
+                                        <span class="format-tag">DOC</span>
+                                        <span class="format-tag">PPT</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 上传进度 -->
+                            <div class="upload-progress" id="uploadProgress" style="display: none;">
+                                <div class="progress-header">
+                                    <span>上传进度</span>
+                                    <span id="uploadPercentage">0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                                <div class="upload-status" id="uploadStatus">准备上传...</div>
+                            </div>
+                        </div>
+
+                        <!-- 文件列表 -->
+                        <div class="files-section">
+                            <div class="files-header">
+                                <h3>
+                                    <i class="fas fa-list"></i>
+                                    课程文件列表
+                                </h3>
+                                <div class="files-actions">
+                                    <button class="btn-secondary" id="refreshFilesBtn">
+                                        <i class="fas fa-sync-alt"></i>
+                                        刷新列表
+                                    </button>
+                                    <div class="files-stats">
+                                        总计: <span id="totalFiles">0</span> 个文件
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="files-container">
+                                <div class="files-empty" id="filesEmpty">
+                                    <div class="empty-icon">
+                                        <i class="fas fa-folder-open"></i>
+                                    </div>
+                                    <h4>暂无课程文件</h4>
+                                    <p>开始上传您的第一个课程文件吧</p>
+                                </div>
+
+                                <div class="files-list" id="filesList" style="display: none;">
+                                    <!-- 文件项将通过JavaScript动态添加 -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 课程管理操作 -->
+                        <div class="course-actions">
+                            <button class="btn-secondary" id="previewCourseBtn">
+                                <i class="fas fa-eye"></i>
+                                预览课程
+                            </button>
+                            <button class="btn-secondary" id="saveDraftBtn">
+                                <i class="fas fa-save"></i>
+                                保存草稿
+                            </button>
+                            <button class="btn-primary" id="publishCourseBtn">
+                                <i class="fas fa-globe"></i>
+                                发布课程
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- 通知容器 -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <!-- 加载遮罩 -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>处理中...</p>
+        </div>
+    </div>
+
+    <script src="/static/js/utils.js?v=20250103-cover"></script>
+    <script src="/static/js/creator-dashboard.js?v=20250103-update"></script>
+</body>
+</html> 

@@ -1,0 +1,80 @@
+# 编译产物
+*.exe
+*.dll
+*.so
+*.dylib
+
+# 测试二进制文件，由go test构建
+*.test
+
+# 输出覆盖率文件
+*.out
+
+# Go workspace文件
+go.work
+
+# 依赖模块
+vendor/
+
+# 开发环境文件
+.env
+.env.local
+
+# IDE文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 操作系统生成的文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 日志文件
+*.log
+
+# Redis dump文件
+*.rdb
+
+# 临时文件
+tmp/
+temp/
+
+# 编译缓存
+.cache/
+
+# 压缩包
+*.zip
+*.tar.gz
+*.tar
+
+# 数据库文件
+*.db
+*.sqlite
+*.sqlite3
+
+# 测试文件（临时）
+test_*.go
+
+# 文档草稿
+draft_*.md
+temp_*.md
+
+# 上传文件目录（根据需要决定是否忽略）
+uploads/
+*.uploaded
+
+# protobuf生成的临时文件
+*_grpc.pb.go.tmp
+*.pb.go.tmp
+
+# 备份文件
+*.bak
+*~
+*.exe~ 

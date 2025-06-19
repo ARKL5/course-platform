@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.SiteName}} - 在线学习平台</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="/" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 外圆环 -->
+                        <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                        <!-- 主体书本 -->
+                        <path d="M12 10 L28 10 L28 30 L20 26 L12 30 Z" fill="currentColor" opacity="0.8"/>
+                        <!-- 中间分割线 -->
+                        <line x1="20" y1="10" x2="20" y2="26" stroke="var(--bg-primary)" stroke-width="1"/>
+                        <!-- 装饰线条 -->
+                        <line x1="14" y1="15" x2="18" y2="15" stroke="var(--bg-primary)" stroke-width="1.5"/>
+                        <line x1="14" y1="18" x2="18" y2="18" stroke="var(--bg-primary)" stroke-width="1.5"/>
+                        <line x1="22" y1="15" x2="26" y2="15" stroke="var(--bg-primary)" stroke-width="1.5"/>
+                        <line x1="22" y1="18" x2="26" y2="18" stroke="var(--bg-primary)" stroke-width="1.5"/>
+                        <!-- 顶部光环效果 -->
+                        <circle cx="20" cy="8" r="3" fill="var(--accent-primary)" opacity="0.6"/>
+                    </svg>
+                    <span class="logo-text">{{.SiteName}}</span>
+                </a>
+                <div class="nav-links">
+                    <a href="/" class="nav-link active">
+                        <i class="fas fa-compass"></i>
+                        发现
+                    </a>
+                    <a href="/dashboard" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        学习中心
+                    </a>
+                    <a href="/creator/dashboard" class="nav-link">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        创作工作台
+                    </a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <!-- 用户头像区域 -->
+                <div class="user-profile" id="userProfile" style="display: none;">
+                    <img src="/static/images/default-avatar.svg" alt="用户头像" class="user-avatar">
+                    <span class="user-name" id="userName">用户</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    
+                    <!-- 用户下拉菜单 -->
+                    <div class="user-dropdown">
+                        <!-- 学习相关功能 -->
+                        <a href="/dashboard" class="dropdown-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>学习仪表盘</span>
+                        </a>
+                        <a href="/creator/dashboard" class="dropdown-item">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>创作工作台</span>
+                        </a>
+                        
+                        <hr class="dropdown-divider">
+                        
+                        <!-- 个人设置功能组 -->
+                        <a href="#" class="dropdown-item" id="profileSettings">
+                            <i class="fas fa-user-edit"></i>
+                            <span>个人资料设置</span>
+                        </a>
+                        <a href="#" class="dropdown-item" id="orderHistory">
+                            <i class="fas fa-receipt"></i>
+                            <span>订单历史</span>
+                        </a>
+                        
+                        <hr class="dropdown-divider">
+                        
+                        <!-- 帮助与支持 -->
+                        <a href="#" class="dropdown-item" id="helpCenter">
+                            <i class="fas fa-question-circle"></i>
+                            <span>帮助中心</span>
+                        </a>
+                        
+                        <hr class="dropdown-divider">
+                        
+                        <!-- 退出功能 -->
+                        <a href="#" class="dropdown-item logout-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>退出登录</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 登录/注册按钮 -->
+                <div class="auth-buttons" id="authButtons">
+                    <a href="/login" class="auth-btn login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>登录</span>
+                    </a>
+                    <a href="/register" class="auth-btn register-btn">
+                        <i class="fas fa-user-plus"></i>
+                        <span>注册</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <!-- 今日推荐课程部分 -->
+        <section class="daily-moments">
+            <h2 class="section-title">Daily Moments</h2>
+            
+            <div class="featured-course">
+                <div class="course-sidebar">
+                    <div class="instructor-info">
+                        <h1 class="instructor-name">Dominique<br>Ansel</h1>
+                        <div class="divider"></div>
+                        <p class="course-description">Teaches French Pastry<br>Fundamentals</p>
+                    </div>
+                    
+                    <div class="course-actions">
+                        <button class="btn-primary">
+                            <i class="fas fa-play"></i>
+                            Watch Now
+                        </button>
+                        <button class="btn-secondary">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button class="btn-secondary">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="btn-secondary">
+                            <i class="fas fa-share"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="course-video">
+                    <div class="video-container">
+                        <div class="video-placeholder">
+                            <img src="https://images.unsplash.com/photo-1517433670267-08bbd4be890f?w=800&h=450&fit=crop" 
+                                 alt="French Pastry Making" 
+                                 class="video-thumbnail" 
+                                 loading="lazy"
+                                 onerror="this.onerror=null; this.src='/static/images/pastry-cover.svg'">
+                            <div class="video-overlay">
+                                <h3 class="video-title">The many layers of a croissant</h3>
+                                <div class="video-controls">
+                                    <button class="control-btn">
+                                        <i class="fas fa-pause"></i>
+                                    </button>
+                                    <button class="control-btn">
+                                        <i class="fas fa-volume-up"></i>
+                                    </button>
+                                    <button class="control-btn">
+                                        <i class="fas fa-closed-captioning"></i>
+                                    </button>
+                                    <button class="control-btn">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button class="control-btn">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="video-play-overlay">
+                                <div class="play-button-large" onclick="trackVideoPlay('daily-moments', 'croissant-making')">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 继续学习部分 -->
+        <section class="continue-watching">
+            <div class="section-header">
+                <h2 class="section-title">Continue Watching</h2>
+                <a href="#" class="section-link">
+                    My Progress
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            {{if .ContinueCourses}}
+            <div class="course-grid">
+                {{range .ContinueCourses}}
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <img src="{{.CoverImage}}" alt="{{.Title}}" class="course-image">
+                        <div class="course-duration">{{.Duration}}</div>
+                        <div class="play-overlay" onclick="trackVideoPlay('continue-watching', '{{.Title}}')">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="progress-overlay">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="course-info">
+                        <h3 class="course-title">{{.Title}}</h3>
+                        <p class="course-meta">{{.TeacherName}} • {{.Progress}}</p>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+            {{else}}
+            <!-- 空状态设计 -->
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 书本堆叠 -->
+                        <rect x="30" y="60" width="60" height="8" rx="2" fill="var(--accent-primary)" opacity="0.3"/>
+                        <rect x="25" y="52" width="70" height="8" rx="2" fill="var(--accent-primary)" opacity="0.5"/>
+                        <rect x="20" y="44" width="80" height="8" rx="2" fill="var(--accent-primary)" opacity="0.7"/>
+                        
+                        <!-- 播放按钮 -->
+                        <circle cx="60" cy="30" r="18" fill="var(--accent-primary)" opacity="0.2"/>
+                        <circle cx="60" cy="30" r="12" fill="var(--accent-primary)" opacity="0.6"/>
+                        <path d="M54 24 L54 36 L70 30 Z" fill="white"/>
+                        
+                        <!-- 星星装饰 -->
+                        <path d="M30 20 L32 26 L38 26 L33 30 L35 36 L30 32 L25 36 L27 30 L22 26 L28 26 Z" fill="var(--accent-secondary)" opacity="0.4"/>
+                        <path d="M85 35 L86 38 L89 38 L87 40 L88 43 L85 41 L82 43 L83 40 L81 38 L84 38 Z" fill="var(--accent-secondary)" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="empty-state-content">
+                    <h3 class="empty-state-title">开始你的学习之旅</h3>
+                    <p class="empty-state-description">
+                        你还没有开始任何课程。从下面的热门课程中选择一门，
+                        <br>开启你的知识探索之旅吧！
+                    </p>
+                    <button class="empty-state-button" onclick="document.querySelector('.popular-courses').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-compass"></i>
+                        探索热门课程
+                    </button>
+                </div>
+            </div>
+            {{end}}
+        </section>
+
+        <!-- 热门课程部分 -->
+        <section class="popular-courses">
+            <div class="section-header">
+                <h2 class="section-title">Popular Courses</h2>
+                <a href="#" class="section-link">
+                    View All
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="course-grid">
+                {{range .HotCourses}}
+                <div class="course-card" data-course-id="{{.ID}}">
+                    <div class="course-thumbnail">
+                        {{if .CoverImage}}
+                        <img src="{{.CoverImage}}" alt="{{.Title}}" class="course-image" loading="lazy">
+                        {{else}}
+                        <div class="placeholder-thumbnail">
+                            <div class="course-icon">
+                                {{if eq .Category "编程开发"}}
+                                <i class="fas fa-code"></i>
+                                {{else if eq .Category "架构设计"}}
+                                <i class="fas fa-sitemap"></i>
+                                {{else if eq .Category "运维部署"}}
+                                <i class="fas fa-server"></i>
+                                {{else if eq .Category "容器编排"}}
+                                <i class="fab fa-docker"></i>
+                                {{else if eq .Category "前端开发"}}
+                                <i class="fab fa-html5"></i>
+                                {{else if eq .Category "人工智能"}}
+                                <i class="fas fa-brain"></i>
+                                {{else if eq .Category "数据库"}}
+                                <i class="fas fa-database"></i>
+                                {{else}}
+                                <i class="fas fa-graduation-cap"></i>
+                                {{end}}
+                            </div>
+                            <div class="course-category">{{.Category}}</div>
+                        </div>
+                        {{end}}
+                        <div class="course-duration">12:30</div>
+                        <div class="play-overlay" onclick="trackVideoPlay('popular-courses', '{{.ID}}')">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        {{if .Price}}
+                        <div class="course-price">¥{{printf "%.0f" .Price}}</div>
+                        {{end}}
+                    </div>
+                    <div class="course-info">
+                        <h3 class="course-title">{{.Title}}</h3>
+                        <p class="course-meta">{{.TeacherName}} • {{.Category}}</p>
+                        <div class="course-rating">
+                            <div class="stars">
+                                {{/* 简化星级显示，避免类型比较错误 */}}
+                                {{if ge .Rating 4.5}}
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                {{else if ge .Rating 4.0}}
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                                {{else}}
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                                {{end}}
+                            </div>
+                            <span class="rating-score">{{printf "%.1f" .Rating}}</span>
+                            <span class="rating-count">({{.StudentCount | formatNumber}})</span>
+                        </div>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>学习平台</h4>
+                <ul>
+                    <li><a href="#">关于我们</a></li>
+                    <li><a href="#">帮助中心</a></li>
+                    <li><a href="#">联系我们</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>课程</h4>
+                <ul>
+                    <li><a href="#">所有课程</a></li>
+                    <li><a href="#">热门课程</a></li>
+                    <li><a href="#">新课程</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>社区</h4>
+                <ul>
+                    <li><a href="#">学习社区</a></li>
+                    <li><a href="#">讲师中心</a></li>
+                    <li><a href="#">学员故事</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 {{.SiteName}}. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html> 

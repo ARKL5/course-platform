@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Course.Title}} - {{.SiteName}}</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/course-detail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="/" class="logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" fill="currentColor"/>
+                            <circle cx="12" cy="12" r="3" fill="white"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">Course Platform</span>
+                </a>
+                <div class="nav-links">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        首页
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-compass"></i>
+                        发现
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        我的进度
+                    </a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span class="user-name">Guest</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <main class="course-detail-main">
+        <div class="course-detail-container">
+            <!-- 左栏：视频播放器和课程信息 -->
+            <div class="course-left-column">
+                <!-- 视频播放器区域 -->
+                <section class="video-player-section">
+                    <div class="video-player-container">
+                        <div class="video-player" id="videoPlayer">
+                            {{if .CurrentLesson}}
+                                {{if eq (getFileType .CurrentLesson.FileName) "视频"}}
+                                <div class="video-placeholder">
+                                    <div class="video-content">
+                                        <div class="play-button-container">
+                                            <button class="video-play-btn" onclick="trackVideoPlay('course-detail', '{{.Course.Id}}-{{.CurrentLesson.Id}}')">
+                                                <i class="fas fa-play"></i>
+                                            </button>
+                                        </div>
+                                        <div class="video-info">
+                                            <h3 class="current-lesson-title">{{.CurrentLesson.FileName}}</h3>
+                                            <p class="current-lesson-meta">课程: {{.Course.Title}} • {{getVideoDuration .CurrentLesson.FileName}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="video-overlay"></div>
+                                </div>
+                                {{else}}
+                                <div class="document-preview">
+                                    <div class="document-content">
+                                        <div class="document-icon-container">
+                                            {{if eq (getFileType .CurrentLesson.FileName) "PDF"}}
+                                            <i class="fas fa-file-pdf document-icon"></i>
+                                            {{else if eq (getFileType .CurrentLesson.FileName) "演示文稿"}}
+                                            <i class="fas fa-file-powerpoint document-icon"></i>
+                                            {{else}}
+                                            <i class="fas fa-file-alt document-icon"></i>
+                                            {{end}}
+                                        </div>
+                                        <div class="document-info">
+                                            <h3 class="current-lesson-title">{{.CurrentLesson.FileName}}</h3>
+                                            <p class="current-lesson-meta">{{getFileType .CurrentLesson.FileName}} • {{formatFileSize .CurrentLesson.FileSize}}</p>
+                                            <div class="document-actions">
+                                                <button class="btn-primary document-btn" onclick="downloadDocument('{{.CurrentLesson.Id}}')">
+                                                    <i class="fas fa-download"></i>
+                                                    下载资料
+                                                </button>
+                                                <button class="btn-secondary document-btn" onclick="previewDocument('{{.CurrentLesson.Id}}')">
+                                                    <i class="fas fa-eye"></i>
+                                                    在线预览
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{end}}
+                            {{else}}
+                            <div class="video-placeholder-empty">
+                                <i class="fas fa-graduation-cap"></i>
+                                <p>选择课程开始学习</p>
+                            </div>
+                            {{end}}
+                        </div>
+                        
+                        <!-- 视频控制栏 -->
+                        <div class="video-controls">
+                            <div class="controls-left">
+                                <button class="control-btn" id="playPauseBtn">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button class="control-btn">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                                <span class="time-display">0:00 / 0:00</span>
+                            </div>
+                            <div class="controls-center">
+                                <div class="progress-bar">
+                                    <div class="progress-filled"></div>
+                                    <div class="progress-handle"></div>
+                                </div>
+                            </div>
+                            <div class="controls-right">
+                                <button class="control-btn">
+                                    <i class="fas fa-closed-captioning"></i>
+                                </button>
+                                <button class="control-btn">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                                <button class="control-btn">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 课程信息区域 -->
+                <section class="course-info-section">
+                    <div class="course-header">
+                        <h1 class="course-title">{{.Course.Title}}</h1>
+                        <div class="course-meta">
+                            <span class="instructor">讲师：{{.Course.InstructorName}}</span>
+                            <span class="separator">•</span>
+                            <span class="category">{{.Course.Category}}</span>
+                            <span class="separator">•</span>
+                            <span class="lessons-count">{{len .Lessons}} 个课时</span>
+                        </div>
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="course-actions">
+                        <button class="btn-primary action-btn main-cta-btn" id="mainCtaBtn">
+                            <i class="fas fa-play"></i>
+                            <span class="cta-text">继续学习</span>
+                        </button>
+                        <button class="btn-secondary action-btn" id="bookmarkBtn">
+                            <i class="far fa-bookmark"></i>
+                            收藏课程
+                        </button>
+                        <button class="btn-secondary action-btn">
+                            <i class="fas fa-share-alt"></i>
+                            分享
+                        </button>
+                        <button class="btn-secondary action-btn">
+                            <i class="fas fa-download"></i>
+                            下载资料
+                        </button>
+                    </div>
+
+                    <!-- 课程描述 -->
+                    <div class="course-description">
+                        <h3>课程介绍</h3>
+                        <div class="description-content">
+                            {{if .Course.Description}}
+                                <p>{{.Course.Description}}</p>
+                            {{else}}
+                                <p>这是一门精心设计的专业课程，将为您提供全面深入的学习体验。通过系统化的课程内容和实践项目，您将掌握相关技能并获得实际应用能力。</p>
+                            {{end}}
+                        </div>
+                    </div>
+
+                    <!-- 课程统计 -->
+                    <div class="course-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-star"></i>
+                            <span class="stat-label">评分</span>
+                            <span class="stat-value">4.8</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-users"></i>
+                            <span class="stat-label">学员</span>
+                            <span class="stat-value">1,234</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="stat-label">时长</span>
+                            <span class="stat-value">8小时</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-certificate"></i>
+                            <span class="stat-label">证书</span>
+                            <span class="stat-value">有</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 右栏：课程大纲 -->
+            <div class="course-right-column">
+                <section class="course-curriculum">
+                    <div class="curriculum-header">
+                        <h2>课程大纲</h2>
+                        <span class="lessons-progress">{{len .Lessons}} 课时</span>
+                    </div>
+
+                    <div class="lessons-list" id="lessonsList">
+                        {{if .Lessons}}
+                            {{range $index, $lesson := .Lessons}}
+                            <div class="lesson-item {{if eq $.CurrentLesson.Id $lesson.Id}}active{{end}}" 
+                                 data-lesson-id="{{$lesson.Id}}" 
+                                 onclick="selectLesson({{$lesson.Id}}, '{{$lesson.FileName}}', {{$.Course.Id}})">
+                                <div class="lesson-number">{{add $index 1}}</div>
+                                <div class="lesson-content">
+                                    <h4 class="lesson-title">{{$lesson.FileName}}</h4>
+                                    <div class="lesson-meta">
+                                        <span class="lesson-duration">
+                                            {{if eq (getFileType $lesson.FileName) "视频"}}
+                                            <i class="fas fa-play-circle"></i>
+                                            <span class="lesson-time">{{getVideoDuration $lesson.FileName}}</span>
+                                            {{else}}
+                                            <i class="fas fa-download"></i>
+                                            <span class="file-size">{{formatFileSize $lesson.FileSize}}</span>
+                                            {{end}}
+                                        </span>
+                                        <span class="lesson-type">
+                                            {{if eq (getFileType $lesson.FileName) "视频"}}
+                                            <i class="fas fa-video"></i>
+                                            {{else if eq (getFileType $lesson.FileName) "PDF"}}
+                                            <i class="fas fa-file-pdf"></i>
+                                            {{else if eq (getFileType $lesson.FileName) "演示文稿"}}
+                                            <i class="fas fa-file-powerpoint"></i>
+                                            {{else}}
+                                            <i class="fas fa-file-alt"></i>
+                                            {{end}}
+                                            {{getFileType $lesson.FileName}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="lesson-status">
+                                    {{if eq $.CurrentLesson.Id $lesson.Id}}
+                                    <i class="fas fa-play-circle playing-icon"></i>
+                                    {{else}}
+                                    <i class="fas fa-play-circle"></i>
+                                    {{end}}
+                                </div>
+                            </div>
+                            {{end}}
+                        {{else}}
+                        <div class="no-lessons">
+                            <i class="fas fa-folder-open"></i>
+                            <p>暂无课程内容</p>
+                        </div>
+                        {{end}}
+                    </div>
+                </section>
+
+                <!-- 相关推荐 -->
+                <section class="related-courses">
+                    <h3>相关推荐</h3>
+                    <div class="related-list">
+                        {{if eq .Course.Category "编程开发"}}
+                        <div class="related-course-card" onclick="showRelatedCourseInfo('微服务架构设计', '李四')">
+                            <div class="related-thumb">
+                                <i class="fas fa-sitemap"></i>
+                            </div>
+                            <div class="related-info">
+                                <h5>微服务架构设计</h5>
+                                <p class="related-meta">李四 • 架构设计</p>
+                                <div class="related-rating">
+                                    <span class="rating-stars">★★★★★</span>
+                                    <span class="rating-score">4.8</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="related-course-card" onclick="showRelatedCourseInfo('Docker容器技术', '王五')">
+                            <div class="related-thumb">
+                                <i class="fab fa-docker"></i>
+                            </div>
+                            <div class="related-info">
+                                <h5>Docker容器技术</h5>
+                                <p class="related-meta">王五 • 运维部署</p>
+                                <div class="related-rating">
+                                    <span class="rating-stars">★★★★☆</span>
+                                    <span class="rating-score">4.7</span>
+                                </div>
+                            </div>
+                        </div>
+                        {{else if eq .Course.Category "架构设计"}}
+                        <div class="related-course-card" onclick="showRelatedCourseInfo('Go语言进阶开发', '张三')">
+                            <div class="related-thumb">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="related-info">
+                                <h5>Go语言进阶开发</h5>
+                                <p class="related-meta">张三 • 编程开发</p>
+                                <div class="related-rating">
+                                    <span class="rating-stars">★★★★★</span>
+                                    <span class="rating-score">4.9</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="related-course-card" onclick="showRelatedCourseInfo('Kubernetes实战', '赵六')">
+                            <div class="related-thumb">
+                                <i class="fas fa-dharmachakra"></i>
+                            </div>
+                            <div class="related-info">
+                                <h5>Kubernetes实战</h5>
+                                <p class="related-meta">赵六 • 容器编排</p>
+                                <div class="related-rating">
+                                    <span class="rating-stars">★★★★★</span>
+                                    <span class="rating-score">4.9</span>
+                                </div>
+                            </div>
+                        </div>
+                        {{else}}
+                        <div class="related-course-card" onclick="showRelatedCourseInfo('Go语言进阶开发', '张三')">
+                            <div class="related-thumb">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="related-info">
+                                <h5>Go语言进阶开发</h5>
+                                <p class="related-meta">张三 • 编程开发</p>
+                                <div class="related-rating">
+                                    <span class="rating-stars">★★★★★</span>
+                                    <span class="rating-score">4.9</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="related-course-card" onclick="showRelatedCourseInfo('微服务架构设计', '李四')">
+                            <div class="related-thumb">
+                                <i class="fas fa-sitemap"></i>
+                            </div>
+                            <div class="related-info">
+                                <h5>微服务架构设计</h5>
+                                <p class="related-meta">李四 • 架构设计</p>
+                                <div class="related-rating">
+                                    <span class="rating-stars">★★★★★</span>
+                                    <span class="rating-score">4.8</span>
+                                </div>
+                            </div>
+                        </div>
+                        {{end}}
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/course-detail.js"></script>
+</body>
+</html> 

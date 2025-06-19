@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package content;
+
+option go_package = "course-platform/internal/shared/pb/contentpb";
+
+// 内容服务定义
+service ContentService {
+  // 上传文件
+  rpc UploadFile(UploadFileRequest) returns (UploadFileResponse);
+  // 获取文件列表
+  rpc GetFiles(GetFilesRequest) returns (GetFilesResponse);
+  // 删除文件
+  rpc DeleteFile(DeleteFileRequest) returns (DeleteFileResponse);
+}
+
+// 上传文件请求消息
+message UploadFileRequest {
+  string file_name = 1;
+  bytes file_data = 2;
+  string file_type = 3;
+  uint32 course_id = 4;
+  uint32 uploader_id = 5;
+}
+
+// 上传文件响应消息
+message UploadFileResponse {
+  int32 code = 1;
+  string message = 2;
+  FileInfo file_info = 3;
+}
+
+// 获取文件列表请求消息
+message GetFilesRequest {
+  uint32 course_id = 1;
+  string file_type = 2;
+  uint32 page = 3;
+  uint32 page_size = 4;
+}
+
+// 获取文件列表响应消息
+message GetFilesResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated FileInfo files = 3;
+  uint32 total = 4;
+  uint32 page = 5;
+  uint32 page_size = 6;
+}
+
+// 删除文件请求消息
+message DeleteFileRequest {
+  string file_id = 1;
+  uint32 user_id = 2;
+}
+
+// 删除文件响应消息
+message DeleteFileResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// 文件信息模型
+message FileInfo {
+  string file_id = 1;
+  string file_name = 2;
+  string file_url = 3;
+  string file_type = 4;
+  int64 file_size = 5;
+  uint32 course_id = 6;
+  uint32 uploader_id = 7;
+  string created_at = 8;
+  string updated_at = 9;
+} 

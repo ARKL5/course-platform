@@ -1,0 +1,40 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A0522D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D2691E;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="croissant" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="800" height="450" fill="url(#bg)"/>
+  
+  <!-- 装饰性的面粉粉末效果 -->
+  <circle cx="100" cy="80" r="3" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="150" cy="60" r="2" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="680" cy="100" r="4" fill="rgba(255,255,255,0.25)"/>
+  <circle cx="720" cy="70" r="2.5" fill="rgba(255,255,255,0.3)"/>
+  
+  <!-- 主要的羊角面包形状 -->
+  <path d="M 200 250 Q 300 200 400 225 Q 500 250 600 200 Q 650 180 700 200 Q 720 210 710 230 Q 700 250 680 260 Q 600 280 500 300 Q 400 320 300 290 Q 200 260 200 250 Z" fill="url(#croissant)" opacity="0.8"/>
+  
+  <!-- 羊角面包的层次纹理 -->
+  <path d="M 220 255 Q 320 205 420 230 Q 520 255 620 205" stroke="rgba(139,69,19,0.4)" stroke-width="2" fill="none"/>
+  <path d="M 240 265 Q 340 215 440 240 Q 540 265 640 215" stroke="rgba(139,69,19,0.3)" stroke-width="1.5" fill="none"/>
+  
+  <!-- 小麦图标 -->
+  <g transform="translate(350, 150)">
+    <path d="M 0 50 L 0 0 M -5 10 L 5 10 M -8 20 L 8 20 M -6 30 L 6 30 M -4 40 L 4 40" stroke="#8B4513" stroke-width="2" fill="none"/>
+    <circle cx="0" cy="5" r="1" fill="#8B4513"/>
+  </g>
+  
+  <!-- 标题文字 -->
+  <text x="400" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" opacity="0.9">French Pastry Making</text>
+  <text x="400" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.8)">The Art of Croissant Crafting</text>
+</svg> 

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - Course Platform</title>
+    
+    <!-- CSS样式 -->
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/auth.css">
+    
+    <!-- Font Awesome图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 网站图标 -->
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    
+    <!-- 搜索引擎优化 -->
+    <meta name="description" content="登录Course Platform，继续您的学习之旅">
+    <meta name="keywords" content="登录,学习平台,在线教育,Course Platform">
+    <meta name="author" content="Course Platform">
+    
+    <!-- Open Graph标签 -->
+    <meta property="og:title" content="登录 - Course Platform">
+    <meta property="og:description" content="登录您的Course Platform账户，继续学习之旅">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{.BaseURL}}/login">
+    
+    <!-- 移动端优化 -->
+    <meta name="theme-color" content="#ef4444">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+
+<body class="auth-page">
+    <!-- 导航栏 -->
+    <nav class="navbar" style="position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(10, 14, 26, 0.95); backdrop-filter: blur(10px);">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/" class="brand-link">
+                    <div class="brand-icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <span class="brand-text">Course Platform</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-links">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </a>
+                    <a href="/courses" class="nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>发现</span>
+                    </a>
+                    <a href="/register" class="nav-link">
+                        <i class="fas fa-user-plus"></i>
+                        <span>注册</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 移动端菜单按钮 -->
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="切换菜单">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- 主要内容区域 -->
+    <main class="auth-main">
+        <!-- 注册成功提示区域 -->
+        <div id="registrationSuccessAlert" class="registration-success-alert" style="display: none;">
+            <div class="success-content">
+                <i class="fas fa-check-circle"></i>
+                <div class="success-text">
+                    <h4>注册成功！</h4>
+                    <p id="successMessage">请使用您的账户信息登录</p>
+                </div>
+                <button class="success-close" id="closeSuccessAlert">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- AuthForm组件将插入到这里 -->
+        <div id="authFormContainer"></div>
+    </main>
+    
+    <!-- 页面底部装饰 */
+    <div class="auth-decoration">
+        <div class="decoration-circle decoration-circle-1"></div>
+        <div class="decoration-circle decoration-circle-2"></div>
+        <div class="decoration-circle decoration-circle-3"></div>
+    </div>
+    
+    <!-- JavaScript脚本 -->
+    <script src="/static/js/auth-form.js"></script>
+    <script src="/static/js/login.js"></script>
+    
+    <!-- 页面加载动画 -->
+    <div id="pageLoader" class="page-loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <div class="loader-text">正在加载...</div>
+        </div>
+    </div>
+    
+    <style>
+        /* 页面加载器样式 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader-content {
+            text-align: center;
+        }
+        
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        .loader-text {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        /* 导航栏在认证页面的样式调整 */
+        .auth-page .navbar {
+            background: rgba(10, 14, 26, 0.95);
+        }
+        
+        .auth-main {
+            padding-top: 80px; /* 为固定导航栏留出空间 */
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-lg);
+        }
+        
+        /* 注册成功提示样式 */
+        .registration-success-alert {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            animation: slideInFromTop 0.5s ease-out;
+        }
+        
+        .success-content {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            position: relative;
+        }
+        
+        .success-content i {
+            color: #10b981;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .success-text h4 {
+            color: var(--text-primary);
+            margin: 0 0 var(--spacing-xs) 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .success-text p {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 0.875rem;
+        }
+        
+        .success-close {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: var(--spacing-xs);
+            border-radius: var(--border-radius-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .success-close:hover {
+            color: var(--text-primary);
+            background: var(--hover-bg);
+        }
+        
+        @keyframes slideInFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 装饰元素 */
+        .auth-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .decoration-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 70%);
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        .decoration-circle-1 {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .decoration-circle-2 {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 15%;
+            animation-delay: -5s;
+        }
+        
+        .decoration-circle-3 {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -10s;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .auth-main {
+                padding-top: 60px;
+                min-height: calc(100vh - 60px);
+                padding-left: var(--spacing-md);
+                padding-right: var(--spacing-md);
+            }
+            
+            .decoration-circle {
+                opacity: 0.5;
+            }
+            
+            .registration-success-alert {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+        
+        /* 成功提示的响应式 */
+        @media (max-width: 480px) {
+            .success-content {
+                gap: var(--spacing-sm);
+            }
+            
+            .success-content i {
+                font-size: 1.25rem;
+            }
+            
+            .success-text h4 {
+                font-size: 0.9rem;
+            }
+            
+            .success-text p {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</body>
+</html> 

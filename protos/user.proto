@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "course-platform/internal/shared/pb/userpb";
+
+// 用户服务定义
+service UserService {
+  // 用户注册
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  // 用户登录
+  rpc Login(LoginRequest) returns (LoginResponse);
+  // 根据用户名获取用户
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  // 根据用户ID获取用户
+  rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse);
+  // 更新用户资料
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse);
+  // 修改密码
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+}
+
+// 注册请求消息
+message RegisterRequest {
+  string username = 1;
+  string password = 2;
+  string email = 3;
+  string nickname = 4;
+}
+
+// 注册响应消息
+message RegisterResponse {
+  int32 code = 1;
+  string message = 2;
+  User user = 3;
+}
+
+// 登录请求消息
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+// 登录响应消息
+message LoginResponse {
+  int32 code = 1;
+  string message = 2;
+  string token = 3;
+  User user = 4;
+}
+
+// 获取用户请求消息
+message GetUserRequest {
+  string username = 1;
+}
+
+// 获取用户响应消息
+message GetUserResponse {
+  int32 code = 1;
+  string message = 2;
+  User user = 3;
+}
+
+// 根据ID获取用户请求消息
+message GetUserByIDRequest {
+  uint32 user_id = 1;
+}
+
+// 根据ID获取用户响应消息
+message GetUserByIDResponse {
+  int32 code = 1;
+  string message = 2;
+  User user = 3;
+}
+
+// 更新用户资料请求消息
+message UpdateProfileRequest {
+  uint32 user_id = 1;
+  string nickname = 2;
+  string avatar = 3;
+  string phone = 4;
+  string bio = 5;
+}
+
+// 更新用户资料响应消息
+message UpdateProfileResponse {
+  int32 code = 1;
+  string message = 2;
+  User user = 3;
+}
+
+// 修改密码请求消息
+message ChangePasswordRequest {
+  uint32 user_id = 1;
+  string current_password = 2;
+  string new_password = 3;
+}
+
+// 修改密码响应消息
+message ChangePasswordResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// 用户模型
+message User {
+  uint32 id = 1;
+  string username = 2;
+  string email = 3;
+  string nickname = 4;
+  string avatar = 5;
+  string phone = 6;
+  string bio = 7;
+  string created_at = 8;
+  string updated_at = 9;
+} 

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.PageTitle}} - {{.SiteName}}</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/course-detail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
+    <style>
+        .courses-list-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .filters-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .search-bar {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .categories-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        
+        .category-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+        
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .course-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-primary);
+        }
+        
+        .course-thumbnail {
+            position: relative;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+        }
+        
+        .course-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .placeholder-thumbnail {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .course-icon {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .course-category {
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .course-price {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .course-info {
+            padding: 1.5rem;
+        }
+        
+        .course-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .course-meta {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .course-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stars {
+            color: #fbbf24;
+        }
+        
+        .rating-score {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .rating-count {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .pagination-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination-btn:hover:not(.disabled) {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+        
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .results-info {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        @media (max-width: 768px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .categories-filter {
+                flex-direction: column;
+            }
+            
+            .category-btn {
+                text-align: center;
+            }
+            
+            .pagination {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="/" class="logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" fill="currentColor"/>
+                            <circle cx="12" cy="12" r="3" fill="white"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">Course Platform</span>
+                </a>
+                <div class="nav-links">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        首页
+                    </a>
+                    <a href="/courses" class="nav-link active">
+                        <i class="fas fa-book"></i>
+                        所有课程
+                    </a>
+                    <a href="/dashboard" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        我的进度
+                    </a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span class="user-name">Guest</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="courses-list-container">
+        <!-- 页面标题 -->
+        <div class="page-header">
+            <h1 class="page-title">所有课程</h1>
+            <p class="page-subtitle">发现适合您的学习课程，开启技能提升之旅</p>
+        </div>
+
+        <!-- 搜索和过滤 -->
+        <div class="filters-section">
+            <!-- 搜索栏 -->
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       class="search-input" 
+                       placeholder="搜索课程标题、讲师或关键词..." 
+                       value="{{.Keyword}}"
+                       onkeypress="if(event.key==='Enter') searchCourses()">
+            </div>
+            
+            <!-- 分类过滤 -->
+            <div class="categories-filter">
+                {{range .Categories}}
+                <a href="/courses?category={{.ID}}" 
+                   class="category-btn {{if eq .ID $.CurrentCategory}}active{{end}}">
+                    {{.Name}}
+                </a>
+                {{end}}
+            </div>
+        </div>
+
+        <!-- 结果信息 -->
+        {{if .Courses}}
+        <div class="results-info">
+            <p>找到 <strong>{{.TotalCourses}}</strong> 门课程</p>
+        </div>
+        {{end}}
+
+        <!-- 课程网格 -->
+        {{if .Courses}}
+        <div class="courses-grid">
+            {{range .Courses}}
+            <div class="course-card" onclick="window.location.href='/course/{{.ID}}'">
+                <div class="course-thumbnail">
+                    {{if .CoverImage}}
+                    <img src="{{.CoverImage}}" alt="{{.Title}}" class="course-image" loading="lazy">
+                    {{else}}
+                    <div class="placeholder-thumbnail">
+                        <div class="course-icon">
+                            {{if eq .Category "编程开发"}}
+                            <i class="fas fa-code"></i>
+                            {{else if eq .Category "架构设计"}}
+                            <i class="fas fa-sitemap"></i>
+                            {{else if eq .Category "运维部署"}}
+                            <i class="fas fa-server"></i>
+                            {{else if eq .Category "容器编排"}}
+                            <i class="fab fa-docker"></i>
+                            {{else if eq .Category "前端开发"}}
+                            <i class="fab fa-html5"></i>
+                            {{else if eq .Category "人工智能"}}
+                            <i class="fas fa-brain"></i>
+                            {{else if eq .Category "数据库"}}
+                            <i class="fas fa-database"></i>
+                            {{else}}
+                            <i class="fas fa-graduation-cap"></i>
+                            {{end}}
+                        </div>
+                        <div class="course-category">{{.Category}}</div>
+                    </div>
+                    {{end}}
+                    {{if .Price}}
+                    <div class="course-price">¥{{printf "%.0f" .Price}}</div>
+                    {{end}}
+                </div>
+                <div class="course-info">
+                    <h3 class="course-title">{{.Title}}</h3>
+                    <p class="course-meta">{{.TeacherName}} • {{.Category}}</p>
+                    {{if .Description}}
+                    <p class="course-description">{{.Description}}</p>
+                    {{end}}
+                    <div class="course-rating">
+                        <div class="stars">
+                            {{if ge .Rating 4.5}}
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            {{else if ge .Rating 4.0}}
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            {{else}}
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            {{end}}
+                        </div>
+                        <span class="rating-score">{{printf "%.1f" .Rating}}</span>
+                        <span class="rating-count">({{.StudentCount}})</span>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination">
+            {{if gt .CurrentPage 1}}
+            <a href="/courses?page={{.CurrentPage | sub 1}}{{if .CurrentCategory}}&category={{.CurrentCategory}}{{end}}{{if .Keyword}}&search={{.Keyword}}{{end}}" 
+               class="pagination-btn">
+                <i class="fas fa-chevron-left"></i> 上一页
+            </a>
+            {{else}}
+            <span class="pagination-btn disabled">
+                <i class="fas fa-chevron-left"></i> 上一页
+            </span>
+            {{end}}
+            
+            <span class="pagination-info">第 {{.CurrentPage}} 页</span>
+            
+            {{if .HasNextPage}}
+            <a href="/courses?page={{.CurrentPage | add 1}}{{if .CurrentCategory}}&category={{.CurrentCategory}}{{end}}{{if .Keyword}}&search={{.Keyword}}{{end}}" 
+               class="pagination-btn">
+                下一页 <i class="fas fa-chevron-right"></i>
+            </a>
+            {{else}}
+            <span class="pagination-btn disabled">
+                下一页 <i class="fas fa-chevron-right"></i>
+            </span>
+            {{end}}
+        </div>
+        {{else}}
+        <!-- 空状态 -->
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3>未找到相关课程</h3>
+            <p>请尝试调整搜索条件或选择其他分类</p>
+            <a href="/courses" class="pagination-btn" style="margin-top: 1rem;">查看所有课程</a>
+        </div>
+        {{end}}
+    </main>
+
+    <!-- JavaScript -->
+    <script src="/static/js/utils.js?v=20250103-courses"></script>
+    <script src="/static/js/main.js?v=20250103-courses"></script>
+    <script>
+        function searchCourses() {
+            const searchInput = document.querySelector('.search-input');
+            const keyword = searchInput.value.trim();
+            const currentCategory = {{.CurrentCategory}};
+            
+            let url = '/courses';
+            const params = new URLSearchParams();
+            
+            if (keyword) {
+                params.append('search', keyword);
+            }
+            if (currentCategory > 0) {
+                params.append('category', currentCategory);
+            }
+            
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+            
+            window.location.href = url;
+        }
+
+        // 初始化用户状态
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查用户认证状态并更新导航栏
+            if (typeof window.coursePlayer !== 'undefined') {
+                window.coursePlayer.checkAuthStatus();
+            }
+        });
+    </script>
+</body>
+</html> 

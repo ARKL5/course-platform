@@ -1,0 +1,12 @@
+server:
+  port: ":8083"
+mysql:
+  user: "root"
+  password: "123456" # <-- 請在這裡填寫您自己的 MySQL 密碼
+  host: "127.0.0.1"
+  port: "3306"
+  db_name: "course_db"
+redis:
+  addr: "127.0.0.1:6379"
+  password: ""
+  db: 0 

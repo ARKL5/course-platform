@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package course;
+
+option go_package = "course-platform/internal/shared/pb/coursepb";
+
+// 课程服务定义
+service CourseService {
+  // 创建课程
+  rpc CreateCourse(CreateCourseRequest) returns (CreateCourseResponse);
+  // 获取课程列表
+  rpc GetCourses(GetCoursesRequest) returns (GetCoursesResponse);
+  // 获取单个课程详情
+  rpc GetCourse(GetCourseRequest) returns (GetCourseResponse);
+  // 更新课程
+  rpc UpdateCourse(UpdateCourseRequest) returns (UpdateCourseResponse);
+  // 发布课程
+  rpc PublishCourse(PublishCourseRequest) returns (PublishCourseResponse);
+}
+
+// 创建课程请求消息
+message CreateCourseRequest {
+  string title = 1;
+  string description = 2;
+  uint32 instructor_id = 3;
+  uint32 category_id = 4;
+  float price = 5;
+  string cover_image = 6;
+}
+
+// 创建课程响应消息
+message CreateCourseResponse {
+  int32 code = 1;
+  string message = 2;
+  Course course = 3;
+}
+
+// 获取课程列表请求消息
+message GetCoursesRequest {
+  uint32 page = 1;
+  uint32 page_size = 2;
+  uint32 category_id = 3;
+}
+
+// 获取课程列表响应消息
+message GetCoursesResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated Course courses = 3;
+  uint32 total = 4;
+}
+
+// 获取单个课程请求消息
+message GetCourseRequest {
+  uint32 course_id = 1;
+}
+
+// 获取单个课程响应消息
+message GetCourseResponse {
+  int32 code = 1;
+  string message = 2;
+  Course course = 3;
+}
+
+// 更新课程请求消息
+message UpdateCourseRequest {
+  uint32 course_id = 1;
+  string title = 2;
+  string description = 3;
+  uint32 category_id = 4;
+  float price = 5;
+  string cover_image = 6;
+}
+
+// 更新课程响应消息
+message UpdateCourseResponse {
+  int32 code = 1;
+  string message = 2;
+  Course course = 3;
+}
+
+// 发布课程请求消息
+message PublishCourseRequest {
+  uint32 course_id = 1;
+}
+
+// 发布课程响应消息
+message PublishCourseResponse {
+  int32 code = 1;
+  string message = 2;
+  Course course = 3;
+}
+
+// 课程模型
+message Course {
+  uint32 id = 1;
+  string title = 2;
+  string description = 3;
+  uint32 instructor_id = 4;
+  uint32 category_id = 5;
+  float price = 6;
+  string cover_image = 7;
+  string status = 8;
+  string created_at = 9;
+  string updated_at = 10;
+} 
