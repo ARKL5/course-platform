@@ -1,5 +1,36 @@
 basePath: /api/v1
 definitions:
+  handler.ChangePasswordRequest:
+    properties:
+      currentPassword:
+        example: oldpassword123
+        type: string
+      newPassword:
+        example: newpassword123
+        minLength: 8
+        type: string
+    required:
+    - currentPassword
+    - newPassword
+    type: object
+  handler.CreateCourseRequest:
+    properties:
+      category_id:
+        type: integer
+      cover_image:
+        type: string
+      description:
+        type: string
+      instructor_id:
+        description: 移除required验证，会从认证信息获取
+        type: integer
+      price:
+        type: number
+      title:
+        type: string
+    required:
+    - title
+    type: object
   handler.ErrorResponse:
     properties:
       error:
@@ -14,8 +45,37 @@ definitions:
       user:
         $ref: '#/definitions/handler.UserInfo'
     type: object
+  handler.LoginRequest:
+    properties:
+      identifier:
+        example: testuser
+        type: string
+      password:
+        example: "123456"
+        type: string
+      rememberMe:
+        example: true
+        type: boolean
+    required:
+    - identifier
+    - password
+    type: object
+  handler.LoginResponse:
+    properties:
+      message:
+        example: 登入成功
+        type: string
+      token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      user:
+        $ref: '#/definitions/handler.UserInfo'
+    type: object
   handler.RegisterRequest:
     properties:
+      email:
+        example: testuser@example.com
+        type: string
       nickname:
         example: 測試用戶
         type: string
@@ -26,6 +86,7 @@ definitions:
         example: testuser
         type: string
     required:
+    - email
     - password
     - username
     type: object
@@ -36,6 +97,34 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/handler.UserInfo'
+    type: object
+  handler.UpdateCourseRequest:
+    properties:
+      category_id:
+        type: integer
+      cover_image:
+        type: string
+      description:
+        type: string
+      price:
+        type: number
+      title:
+        type: string
+    type: object
+  handler.UpdateProfileRequest:
+    properties:
+      avatar:
+        example: https://example.com/avatar.jpg
+        type: string
+      bio:
+        example: 这是我的个人简介
+        type: string
+      nickname:
+        example: 新昵称
+        type: string
+      phone:
+        example: "13800138000"
+        type: string
     type: object
   handler.UserInfo:
     properties:
@@ -55,13 +144,421 @@ definitions:
         example: testuser
         type: string
     type: object
-host: localhost:8082
+host: localhost:8083
 info:
   contact: {}
-  description: 這是課程學習網站的 API 文件。
-  title: 課程學習網站 API
+  description: 这是课程学习网站的 API 文件。
+  title: 课程学习网站 API
   version: "1.0"
 paths:
+  /analytics:
+    post:
+      consumes:
+      - application/json
+      description: 记录用户行为分析数据
+      parameters:
+      - description: 分析数据
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 记录成功
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 用户行为分析
+      tags:
+      - 分析
+  /api/v1/content/files:
+    get:
+      consumes:
+      - application/json
+      description: 获取课程文件列表
+      parameters:
+      - description: 课程ID
+        in: query
+        name: course_id
+        type: string
+      - description: 文件类型
+        in: query
+        name: file_type
+        type: string
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取成功
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 请求错误
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 内部错误
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 获取文件列表
+      tags:
+      - content
+  /api/v1/content/files/{file_id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除文件（需要认证，只能删除自己上传的文件）
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 文件ID
+        in: path
+        name: file_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除成功
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 请求错误
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 认证失败
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 内部错误
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 删除文件
+      tags:
+      - content
+  /api/v1/content/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上传课程相关文件（需要认证）
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 上传的文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 课程ID
+        in: formData
+        name: course_id
+        required: true
+        type: string
+      - description: 文件类型 (image, video, document, audio, other)
+        in: formData
+        name: file_type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 上传成功
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 请求错误
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 认证失败
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 内部错误
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 上传文件
+      tags:
+      - content
+  /api/v1/courses:
+    get:
+      consumes:
+      - application/json
+      description: 分页获取课程列表
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 分类ID
+        in: query
+        name: category_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 获取课程列表
+      tags:
+      - 课程管理
+    post:
+      consumes:
+      - application/json
+      description: 创建新的课程
+      parameters:
+      - description: 课程信息
+        in: body
+        name: course
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateCourseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 创建课程
+      tags:
+      - 课程管理
+  /api/v1/courses/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 根据ID获取课程详情
+      parameters:
+      - description: 课程ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 获取课程详情
+      tags:
+      - 课程管理
+    put:
+      consumes:
+      - application/json
+      description: 更新课程信息
+      parameters:
+      - description: 课程ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 课程信息
+        in: body
+        name: course
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateCourseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 更新课程
+      tags:
+      - 课程管理
+  /api/v1/courses/{id}/publish:
+    post:
+      consumes:
+      - application/json
+      description: 发布课程，使其对学员可见
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 课程ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 发布课程
+      tags:
+      - 课程管理
+  /creator/stats:
+    get:
+      consumes:
+      - application/json
+      description: 获取当前用户的创作者统计信息，包括课程数量、学员数量、收入等
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 统计信息
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未授权
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: 获取创作者统计
+      tags:
+      - 创作者
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 用戶登入並獲取JWT Token
+      parameters:
+      - description: 登入請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登入成功
+          schema:
+            $ref: '#/definitions/handler.LoginResponse'
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "401":
+          description: 認證失敗
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: 用戶登入
+      tags:
+      - 用戶管理
+  /me:
+    get:
+      consumes:
+      - application/json
+      description: 根据JWT Token获取当前登录用户的详细信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/handler.GetUserResponse'
+        "401":
+          description: 未授权
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: 用户不存在
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: 获取当前用户信息
+      tags:
+      - 用户管理
   /register:
     post:
       consumes:
@@ -117,4 +614,100 @@ paths:
       summary: 獲取用戶信息
       tags:
       - 用戶管理
+  /user/password:
+    put:
+      consumes:
+      - application/json
+      description: 修改当前用户的登录密码
+      parameters:
+      - description: 修改密码请求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 修改成功
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "401":
+          description: 未授权
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: 修改密码
+      tags:
+      - 用户管理
+  /user/profile:
+    put:
+      consumes:
+      - application/json
+      description: 更新当前用户的个人资料信息
+      parameters:
+      - description: 更新资料请求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "401":
+          description: 未授权
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: 更新用户资料
+      tags:
+      - 用户管理
+  /validate-token:
+    post:
+      consumes:
+      - application/json
+      description: 验证JWT Token的有效性
+      parameters:
+      - description: Token验证请求
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 验证成功
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Token无效
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: 验证Token
+      tags:
+      - 用户管理
 swagger: "2.0"

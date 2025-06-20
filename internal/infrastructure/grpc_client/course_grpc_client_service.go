@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
 	"course-platform/internal/shared/pb/coursepb"
 
@@ -24,13 +23,7 @@ func NewCourseGRPCClientService(courseServiceAddr string) (*CourseGRPCClientServ
 	log.Printf("🔍 正在连接课程微服务: %s", courseServiceAddr)
 
 	// 创建gRPC连接
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	conn, err := grpc.DialContext(ctx, courseServiceAddr,
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
-	)
+	conn, err := grpc.NewClient(courseServiceAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Printf("❌ 连接课程微服务失败: %v", err)
 		return nil, fmt.Errorf("连接课程微服务失败: %w", err)

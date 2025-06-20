@@ -16,6 +16,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 )
 
@@ -205,6 +207,9 @@ type RouteHandlers struct {
 
 // setupBasicRoutes 设置基础路由
 func setupBasicRoutes(r *gin.Engine, handlers *RouteHandlers) {
+	// Swagger API文档路由
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	// 图片测试页面
 	r.GET("/test-image", func(c *gin.Context) {
 		c.File("./test-image.html")

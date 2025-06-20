@@ -67,7 +67,7 @@ func (s *UserGRPCClientService) Register(username, email, password, nickname str
 
 	if resp.Code != 200 {
 		log.Printf("❌ API Gateway: 注册失败 - %s", resp.Message)
-		return nil, fmt.Errorf(resp.Message)
+		return nil, fmt.Errorf("注册失败: %s", resp.Message)
 	}
 
 	// 转换protobuf User为model.User
@@ -100,7 +100,7 @@ func (s *UserGRPCClientService) Login(username, password string) (string, *model
 
 	if resp.Code != 200 {
 		log.Printf("❌ API Gateway: 登录失败 - %s", resp.Message)
-		return "", nil, fmt.Errorf(resp.Message)
+		return "", nil, fmt.Errorf("登录失败: %s", resp.Message)
 	}
 
 	// 转换protobuf User为model.User
@@ -131,7 +131,7 @@ func (s *UserGRPCClientService) GetUserByUsername(username string) (*model.User,
 
 	if resp.Code != 200 {
 		log.Printf("❌ API Gateway: 获取用户失败 - %s", resp.Message)
-		return nil, fmt.Errorf(resp.Message)
+		return nil, fmt.Errorf("获取用户失败: %s", resp.Message)
 	}
 
 	// 转换protobuf User为model.User
@@ -162,7 +162,7 @@ func (s *UserGRPCClientService) GetUserByID(userID uint) (*model.User, error) {
 
 	if resp.Code != 200 {
 		log.Printf("❌ API Gateway: 获取用户失败 - %s", resp.Message)
-		return nil, fmt.Errorf(resp.Message)
+		return nil, fmt.Errorf("%s", resp.Message)
 	}
 
 	// 转换protobuf User为model.User，包含完整字段

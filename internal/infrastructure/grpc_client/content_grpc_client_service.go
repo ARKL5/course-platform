@@ -21,7 +21,7 @@ type ContentGRPCClientService struct {
 // NewContentGRPCClientService 创建内容服务gRPC客户端
 func NewContentGRPCClientService(address string) (*ContentGRPCClientService, error) {
 	// 建立gRPC连接
-	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, fmt.Errorf("连接内容服务失败: %w", err)
 	}
@@ -87,7 +87,6 @@ func (s *ContentGRPCClientService) DeleteFile(ctx context.Context, req *contentp
 		return nil, fmt.Errorf("删除文件失败: %w", err)
 	}
 
-	log.Printf("🗑️ 调用内容服务删除文件成功: 文件ID=%d", req.FileId)
+	log.Printf("🗑️ 调用内容服务删除文件成功: 文件ID=%s", req.FileId)
 	return resp, nil
 }
-

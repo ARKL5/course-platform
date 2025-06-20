@@ -5,7 +5,9 @@ import (
 
 	_ "course-platform/docs"
 	"course-platform/internal/configs"
-	"course-platform/internal/domain/user/model"
+	contentModel "course-platform/internal/domain/content/model"
+	courseModel "course-platform/internal/domain/course/model"
+	userModel "course-platform/internal/domain/user/model"
 	"course-platform/internal/infrastructure/db"
 	router "course-platform/internal/transport/http"
 )
@@ -13,7 +15,7 @@ import (
 // @title 课程学习网站 API
 // @version 1.0
 // @description 这是课程学习网站的 API 文件。
-// @host localhost:8082
+// @host localhost:8083
 // @BasePath /api/v1
 func main() {
 	// 加载配置文件
@@ -39,7 +41,12 @@ func main() {
 	}
 
 	// 自动迁移数据库结构
-	if err := database.AutoMigrate(&model.User{}); err != nil {
+	if err := database.AutoMigrate(
+		&userModel.User{},
+		&courseModel.Course{},
+		&contentModel.FileInfo{},
+		&contentModel.File{},
+	); err != nil {
 		log.Fatalf("数据库迁移失败: %v", err)
 	}
 	log.Println("✅ 数据库迁移完成")
